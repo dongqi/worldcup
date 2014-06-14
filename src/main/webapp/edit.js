@@ -60,6 +60,9 @@ function save(id) {
 		if(result.success) {
 			alert('赔率保存成功');
 		} else {
+			$('#l_'+id).val(0);
+			$('#m_'+id).val(0);
+			$('#r_'+id).val(0);
 			alert('赔率保存失败');
 		}
 	}, 'json');

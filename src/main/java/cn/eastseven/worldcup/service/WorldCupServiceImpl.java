@@ -102,6 +102,11 @@ public class WorldCupServiceImpl implements WorldCupService {
 	public boolean save(WorldCupData wc) {
 		Jedis jedis = pool.getResource();
 		
+		Date current = Calendar.getInstance().getTime();
+		if(current.getTime() > wc.getTimes()) {
+			return false;
+		}
+		
 		Map<String, String> map = Maps.newHashMap();
 		map.put(WorldCupData.F.resultLeft.toString(),   wc.getResultLeft());
 		map.put(WorldCupData.F.resultMiddle.toString(), wc.getResultMiddle());
