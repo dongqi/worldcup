@@ -1,6 +1,7 @@
 package cn.eastseven.worldcup.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import cn.eastseven.worldcup.domain.WorldCupData;
@@ -18,4 +19,6 @@ public interface WorldCupService {
 	boolean save(WorldCupData wcd);
 	
 	void load();
+	
+	List<Map<String, String>> getMyList(String name);
 }

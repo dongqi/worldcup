@@ -47,6 +47,27 @@ $(document).ready(function(){
 		}
 	});
 	
+	//query
+	$('#query').click(function() {
+		var name = $('#betname').val().trim();
+		if(name == '') {
+			alert('请填写一个有效的邮箱');
+		} else {
+			var data = {name : name};
+			$.getJSON('./cmd?m=mylist', data, function(result) {
+				console.log(result);
+				for(var index = 0; index < result.length; index++) {
+					var n = result[index];
+					if(n.time) {
+						$('#l_'+n.id).attr('value', n.l);
+						$('#m_'+n.id).attr('value', n.m);
+						$('#r_'+n.id).attr('value', n.r);
+					}
+				}
+			});
+			
+		}
+	});
 });
 
 function bet(id) {
@@ -65,6 +86,9 @@ function bet(id) {
 			if(result.success) {
 				alert('下注成功');
 			} else {
+				$('#l_'+id).val(0);
+				$('#m_'+id).val(0);
+				$('#r_'+id).val(0);
 				alert('下注失败');
 			}
 		}, 'json');

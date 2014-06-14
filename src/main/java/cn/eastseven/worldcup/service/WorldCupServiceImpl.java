@@ -1,8 +1,10 @@
 package cn.eastseven.worldcup.service;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,7 @@ public class WorldCupServiceImpl implements WorldCupService {
 	private JedisPool pool = null;
 	
 	public WorldCupServiceImpl() {
-		pool = new JedisPool(new JedisPoolConfig(), "eastseven.cn");
+		pool = new JedisPool(new JedisPoolConfig(), "localhost");
 	}
 	
 	public Set<WorldCupData> getAllData() {
@@ -78,13 +80,20 @@ public class WorldCupServiceImpl implements WorldCupService {
 	
 	public boolean bet(String name, String id, String left, String middle, String right) {
 		Jedis jedis = pool.getResource();
+		
+		Date current = Calendar.getInstance().getTime();
+		WorldCupData wc = WorldCupDataUtils.getMatchList().get(Integer.valueOf(id));
+		if(current.getTime() > wc.getTimes()) {
+			return false;
+		}
+		
 		String key = name + ":" + id;
 		Map<String, String> hash = Maps.newHashMap();
 		hash.put("l", left);
 		hash.put("m", middle);
 		hash.put("r", right);
-		hash.put("time", WorldCupData.sdf.format(Calendar.getInstance().getTime()));
-		System.out.println("name="+name+", id="+id+", l="+left+", m="+middle+", r="+right);
+		hash.put("time", WorldCupData.sdf.format(current));
+		System.out.println("key="+key+", id="+id+", l="+left+", m="+middle+", r="+right);
 		String result = jedis.hmset(key, hash);
 		jedis.close();
 		return "OK".equalsIgnoreCase(result);
@@ -116,5 +125,26 @@ public class WorldCupServiceImpl implements WorldCupService {
 		List<WorldCupData> list = getList(getAllData());
     	boolean bln = WorldCupDataUtils.getMatchList().addAll(list);
     	System.out.println("load worldcupdata from redis to list : "+bln);
+	}
+	
+	public List<Map<String, String>> getMyList(String name) {
+		Jedis jedis = pool.getResource();
+		List<Map<String, String>> list = Lists.newArrayList();
+		
+		for(WorldCupData wc : WorldCupDataUtils.getMatchList()) {
+			String key = name + ":" + wc.getId();
+			List<String> result = jedis.hmget(key, "l", "m", "r", "time");
+			System.out.println("getMylist : key="+key+", result="+Arrays.toString(list.toArray()));
+			Map<String, String> map = Maps.newHashMap();
+			map.put("id", wc.getId());
+			map.put("l", result.get(0));
+			map.put("m", result.get(1));
+			map.put("r", result.get(2));
+			map.put("time", result.get(3));
+			list.add(map);
+		}
+		
+		jedis.close();
+		return list;
 	}
 }

@@ -25,31 +25,23 @@
 		<div class="page-header">
 			<center><h1>Hello World Cup 2014</h1></center>
 		</div>
-
-		<!-- 
-		<div class="panel panel-info">
-			<div class="panel-heading">
-				<center><h3 class="panel-title">06月13日 星期五 04:00 巴西 VS 克罗地亚</h3></center>
-			</div>
-			<div class="panel-body">
-			<center>
-				<button type="button" class="btn btn-primary">稳胆 1.18</button>
-				<button type="button" class="btn btn-default">中庸 5.1</button>
-				<button type="button" class="btn btn-danger">拼了 12.5</button>
-			</center>
-			</div>
-		</div>
-		-->
+		
 		<div class="form-group">
-	    	<input id="betname" name="name" type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+		<div class="input-group input-group-lg">
+		  <span class="input-group-btn">
+	        <button class="btn btn-default" type="button" id="query">我的竞彩记录</button>
+	      </span>
+	      <input id="betname" name="name" type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+		</div>
 	  	</div>
+	  	
 		<div id="list"></div>
 		 
 	</div>
 
 	<div id="footer">
 		<div class="container">
-			<p class="text-muted">Place sticky footer content here.</p>
+			<p class="text-muted">玉林组世界杯专属页面</p>
 		</div>
 	</div>
 

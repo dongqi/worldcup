@@ -3,6 +3,7 @@ package cn.eastseven.worldcup.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -42,6 +43,12 @@ public class WorldCupServlet extends HttpServlet {
 			System.out.println(json);
 			pw.print(json);
 			
+		} else if("mylist".equalsIgnoreCase(m)) {
+			String name = request.getParameter("name");
+			List<Map<String, String>> list = worldCupService.getMyList(name);
+			String json = JSON.toJSONString(list);
+			System.out.println(json);
+			pw.print(json);
 		}
 		
 		pw.close();
