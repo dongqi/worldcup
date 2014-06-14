@@ -65,7 +65,7 @@ public class WorldCupServiceImpl implements WorldCupService {
 	
 	public WorldCupData getData(String id) {
 		WorldCupData data = null;
-		for(Iterator<WorldCupData> iter = WorldCupDataUtils.getMatches().iterator(); iter.hasNext();) {
+		for(Iterator<WorldCupData> iter = WorldCupDataUtils.getMatchList().iterator(); iter.hasNext();) {
 			WorldCupData wcd = iter.next();
 			if(wcd.getId().equals(id)) {
 				data = wcd;
