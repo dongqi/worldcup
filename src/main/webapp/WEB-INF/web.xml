@@ -7,8 +7,8 @@
 	<servlet>
 		<servlet-name>WorldCupServlet</servlet-name>
 		<display-name>WorldCupServlet</display-name>
-		<description></description>
 		<servlet-class>cn.eastseven.worldcup.servlet.WorldCupServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>WorldCupServlet</servlet-name>

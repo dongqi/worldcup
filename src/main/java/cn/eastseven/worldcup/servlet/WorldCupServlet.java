@@ -2,12 +2,7 @@ package cn.eastseven.worldcup.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,25 +27,19 @@ public class WorldCupServlet extends HttpServlet {
         worldCupService = new WorldCupServiceImpl();
     }
 
+    @Override
+    public void init() throws ServletException {
+    	worldCupService.load();
+    }
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String m = request.getParameter("m");
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter pw = response.getWriter();
 		if("list".equalsIgnoreCase(m)) {
-			Set<WorldCupData> all = worldCupService.getAllData();
-			List<WorldCupData> list = new ArrayList<WorldCupData>(all.size());
-			for(Iterator<WorldCupData> iter = all.iterator(); iter.hasNext();) {
-				WorldCupData wcd = iter.next();
-				list.add(wcd);
-			}
-			Collections.sort(list, new Comparator<WorldCupData>() {
-				public int compare(WorldCupData o1, WorldCupData o2) {
-					return Integer.valueOf(o1.getId()) - Integer.valueOf(o2.getId());
-				}
-				
-			});
+			List<WorldCupData> list = WorldCupDataUtils.getMatchList();
 			String json = JSON.toJSONString(list);
-			
+			System.out.println(json);
 			pw.print(json);
 			
 		}

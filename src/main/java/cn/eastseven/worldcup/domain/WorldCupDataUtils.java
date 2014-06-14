@@ -17,21 +17,29 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class WorldCupDataUtils {
 
 	private static Set<WorldCupData> matches = Sets.newConcurrentHashSet();
-
+	private static List<WorldCupData> matches4redis = Lists.newArrayList();
+	
 	public static Set<WorldCupData> getMatches() {
 		return matches;
 	}
 
+	public static List<WorldCupData> getMatchList() {
+		return matches4redis;
+	}
+	
 	static {
-		loadData();
+		//loadData();
 	}
 
+	public static final int NUM = 48;
+	
 	private static void loadData() {
 		String[][] data = { 
 				{ "0", "2014年06月13日 星期五", "04:00", "巴西", "克罗地亚" },
@@ -119,7 +127,6 @@ public class WorldCupDataUtils {
 		
 		for (Iterator<WorldCupData> iter = WorldCupDataUtils.matches.iterator(); iter.hasNext();) {
 			WorldCupData wc = iter.next();
-			System.out.println(wc.getKey());
 			long result = jedis.hdel(wc.getKey(), WorldCupData.getFields());
 			System.out.println(wc.getKey() + " delete " + result);
 		}
@@ -127,10 +134,7 @@ public class WorldCupDataUtils {
 		jedis.close();
 	}
 
-	public static void main(String[] args) throws Exception {
-		// fetchDataFromUrl();
-		cleanData();
-		loadData();
+	private static void import2redis() {
 		JedisPool pool = new JedisPool(new JedisPoolConfig(), "localhost");
 		Jedis jedis = pool.getResource();
 		for (Iterator<WorldCupData> iter = WorldCupDataUtils.matches.iterator(); iter.hasNext();) {
@@ -161,8 +165,7 @@ public class WorldCupDataUtils {
 		jedis.close();
 	}
 
-	private static void fetchDataFromUrl() throws IOException,
-			MalformedURLException {
+	private static void fetchDataFromUrl() throws IOException, MalformedURLException {
 		final String url = "http://2014.sina.com.cn/fixtures/timeline.html";
 		Document doc = Jsoup.parse(new URL(url), 10000);
 
@@ -194,5 +197,14 @@ public class WorldCupDataUtils {
 					+ "\",\"" + teamL + "\",\"" + teamR + "\"},");
 			index++;
 		}
+	}
+	
+	public static void main(String[] args) throws Exception {
+		// fetchDataFromUrl();
+		//cleanData();
+		//loadData();
+		//import2redis();
+		
+		
 	}
 }
