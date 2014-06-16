@@ -55,7 +55,6 @@ $(document).ready(function(){
 		} else {
 			var data = {name : name};
 			$.getJSON('./cmd?m=mylist', data, function(result) {
-				console.log(result);
 				for(var index = 0; index < result.length; index++) {
 					var n = result[index];
 					if(n.time) {
@@ -80,9 +79,7 @@ function bet(id) {
 	} else {
 		
 		var data = { id : id, L : l, M : m, R : r, name : name};
-		console.log(data);
 		$.post('./cmd?m=bet', data, function(result) {
-			console.log('return ', result);
 			if(result.success) {
 				alert('下注成功');
 			} else {
