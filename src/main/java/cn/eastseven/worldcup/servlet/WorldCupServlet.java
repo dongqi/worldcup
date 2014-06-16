@@ -40,14 +40,12 @@ public class WorldCupServlet extends HttpServlet {
 		if("list".equalsIgnoreCase(m)) {
 			List<WorldCupData> list = WorldCupDataUtils.getMatchList();
 			String json = JSON.toJSONString(list);
-			System.out.println(json);
 			pw.print(json);
 			
 		} else if("mylist".equalsIgnoreCase(m)) {
 			String name = request.getParameter("name");
 			List<Map<String, String>> list = worldCupService.getMyList(name);
 			String json = JSON.toJSONString(list);
-			System.out.println(json);
 			pw.print(json);
 		}
 		

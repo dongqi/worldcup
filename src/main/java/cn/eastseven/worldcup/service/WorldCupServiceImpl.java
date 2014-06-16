@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -24,8 +26,11 @@ public class WorldCupServiceImpl implements WorldCupService {
 
 	private JedisPool pool = null;
 	
+	private ExecutorService executorService;
+	
 	public WorldCupServiceImpl() {
 		pool = new JedisPool(new JedisPoolConfig(), "localhost");
+		executorService = Executors.newFixedThreadPool(100);
 	}
 	
 	public Set<WorldCupData> getAllData() {
@@ -78,47 +83,59 @@ public class WorldCupServiceImpl implements WorldCupService {
 		return data;
 	}
 	
-	public boolean bet(String name, String id, String left, String middle, String right) {
-		Jedis jedis = pool.getResource();
-		
-		Date current = Calendar.getInstance().getTime();
+	public boolean bet(final String name, final String id, final String left, final String middle, final String right) {
+		final Date current = Calendar.getInstance().getTime();
 		WorldCupData wc = WorldCupDataUtils.getMatchList().get(Integer.valueOf(id));
 		if(current.getTime() > wc.getTimes()) {
 			return false;
 		}
 		
-		String key = name + ":" + id;
-		Map<String, String> hash = Maps.newHashMap();
-		hash.put("l", left);
-		hash.put("m", middle);
-		hash.put("r", right);
-		hash.put("time", WorldCupData.sdf.format(current));
-		System.out.println("key="+key+", id="+id+", l="+left+", m="+middle+", r="+right);
-		String result = jedis.hmset(key, hash);
-		jedis.close();
-		return "OK".equalsIgnoreCase(result);
+		executorService.execute(new Runnable() {
+			
+			public void run() {
+				Jedis jedis = pool.getResource();
+				
+				String key = name + ":" + id;
+				Map<String, String> hash = Maps.newHashMap();
+				hash.put("l", left);
+				hash.put("m", middle);
+				hash.put("r", right);
+				hash.put("time", WorldCupData.sdf.format(current));
+				String result = jedis.hmset(key, hash);
+				jedis.close();
+				System.out.println("key="+key+", id="+id+", l="+left+", m="+middle+", r="+right+", result="+result);
+			}
+		});
+		
+		return true;//"OK".equalsIgnoreCase(result);
 	}
 	
-	public boolean save(WorldCupData wc) {
-		Jedis jedis = pool.getResource();
+	public boolean save(final WorldCupData wc) {
+		boolean success = true;
+//		Date current = Calendar.getInstance().getTime();
+//		if(current.getTime() > wc.getTimes()) {
+//			return false;
+//		}
 		
-		Date current = Calendar.getInstance().getTime();
-		if(current.getTime() > wc.getTimes()) {
-			return false;
-		}
+		executorService.execute(new Runnable() {
+			
+			public void run() {
+				Jedis jedis = pool.getResource();
+				Map<String, String> map = Maps.newHashMap();
+				map.put(WorldCupData.F.resultLeft.toString(),   wc.getResultLeft());
+				map.put(WorldCupData.F.resultMiddle.toString(), wc.getResultMiddle());
+				map.put(WorldCupData.F.resultRight.toString(),  wc.getResultRight());
+				
+				String result = jedis.hmset(wc.getKey(), map);
+				boolean success = "OK".equalsIgnoreCase(result);
+				if(success) {
+					load();
+				}
+				
+				jedis.close();
+			}
+		});
 		
-		Map<String, String> map = Maps.newHashMap();
-		map.put(WorldCupData.F.resultLeft.toString(),   wc.getResultLeft());
-		map.put(WorldCupData.F.resultMiddle.toString(), wc.getResultMiddle());
-		map.put(WorldCupData.F.resultRight.toString(),  wc.getResultRight());
-		
-		String result = jedis.hmset(wc.getKey(), map);
-		boolean success = "OK".equalsIgnoreCase(result);
-		if(success) {
-			load();
-		}
-		
-		jedis.close();
 		return success;
 	}
 	
@@ -129,7 +146,7 @@ public class WorldCupServiceImpl implements WorldCupService {
 		
 		List<WorldCupData> list = getList(getAllData());
     	boolean bln = WorldCupDataUtils.getMatchList().addAll(list);
-    	System.out.println("load worldcupdata from redis to list : "+bln);
+    	System.out.println("load worldcupdata from redis to list : "+bln+", "+list.size());
 	}
 	
 	public List<Map<String, String>> getMyList(String name) {
