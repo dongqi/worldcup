@@ -52,6 +52,9 @@ public class WorldCupData {
 		return fields;
 	}
 	
+	public WorldCupData() {
+	}
+	
 	public WorldCupData(String id, String teamLeft, String teamRight, String startTime) {
 		super();
 		this.id = id;

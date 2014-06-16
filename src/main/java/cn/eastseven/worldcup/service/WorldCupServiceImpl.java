@@ -121,6 +121,7 @@ public class WorldCupServiceImpl implements WorldCupService {
 			
 			public void run() {
 				Jedis jedis = pool.getResource();
+				
 				Map<String, String> map = Maps.newHashMap();
 				map.put(WorldCupData.F.resultLeft.toString(),   wc.getResultLeft());
 				map.put(WorldCupData.F.resultMiddle.toString(), wc.getResultMiddle());
@@ -168,5 +169,21 @@ public class WorldCupServiceImpl implements WorldCupService {
 		
 		jedis.close();
 		return list;
+	}
+	
+	WorldCupData load(String id) {
+		WorldCupData wcd = null;
+		Jedis jedis = pool.getResource();
+		String key = WorldCupData.key+":"+id;
+		List<String> list = jedis.hmget(key, WorldCupData.getFields());
+		String teamLeft = list.get(1);
+		String teamRight = list.get(2);
+		String startTime = list.get(3);
+		wcd = new WorldCupData(id, teamLeft, teamRight, startTime);
+		wcd.setResultLeft(list.get(6));
+		wcd.setResultMiddle(list.get(7));
+		wcd.setResultRight(list.get(8));
+		jedis.close();
+		return wcd;
 	}
 }

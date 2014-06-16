@@ -73,7 +73,10 @@ public class WorldCupServlet extends HttpServlet {
 			String M = request.getParameter("M");
 			String R = request.getParameter("R");
 			WorldCupData wcd = worldCupService.getData(id);
-			
+			if(wcd == null) {
+				wcd = new WorldCupData();
+				wcd.setId(id);
+			}
 			wcd.setResultLeft(L);
 			wcd.setResultMiddle(M);
 			wcd.setResultRight(R);
