@@ -205,6 +205,11 @@ public class WorldCupDataUtils {
 		//loadData();
 		//import2redis();
 		
-		
+		Jedis j = new Jedis("eastseven.cn");
+		Set<String> keys = j.keys("*");
+		for (String key : keys) {
+			System.out.println("table : " + key.split("\\:")[0]);
+		}
+		j.close();
 	}
 }
