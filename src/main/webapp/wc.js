@@ -55,13 +55,18 @@ $(document).ready(function(){
 		} else {
 			var data = {name : name};
 			$.getJSON('./cmd?m=mylist', data, function(result) {
-				for(var index = 0; index < result.length; index++) {
-					var n = result[index];
-					if(n.time) {
-						$('#l_'+n.id).attr('value', n.l);
-						$('#m_'+n.id).attr('value', n.m);
-						$('#r_'+n.id).attr('value', n.r);
+				if(result) {
+					alert('load success');
+					for(var index = 0; index < result.length; index++) {
+						var n = result[index];
+						if(n.time) {
+							$('#l_'+n.id).attr('value', n.l);
+							$('#m_'+n.id).attr('value', n.m);
+							$('#r_'+n.id).attr('value', n.r);
+						}
 					}
+				} else {
+					alert('load fail');
 				}
 			});
 			
