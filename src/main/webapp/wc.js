@@ -56,7 +56,7 @@ $(document).ready(function(){
 			var data = {name : name};
 			$.getJSON('./cmd?m=mylist', data, function(result) {
 				if(result) {
-					alert('load success');
+					alert('load success, ' + result.length);
 					for(var index = 0; index < result.length; index++) {
 						var n = result[index];
 						if(n.time) {

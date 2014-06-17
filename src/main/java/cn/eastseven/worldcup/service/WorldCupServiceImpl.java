@@ -188,6 +188,7 @@ public class WorldCupServiceImpl implements WorldCupService {
 		for(WorldCupData wc : WorldCupDataUtils.getMatchList()) {
 			String key = name;
 			Map<String, String> map = wc.getBetPersons().get(key);
+			map.put("id", wc.getId());
 			list.add(map);
 		}
 		
