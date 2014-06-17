@@ -2,6 +2,9 @@ package cn.eastseven.worldcup.domain;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Map;
+
+import com.google.common.collect.Maps;
 
 public class WorldCupData {
 
@@ -22,6 +25,8 @@ public class WorldCupData {
 	private String resultLeft   = "0";
 	private String resultMiddle = "0";
 	private String resultRight  = "0";
+	
+	private Map<String, Map<String, String>> betPersons = Maps.newConcurrentMap();
 	
 	public enum F {
 		id,
@@ -168,4 +173,9 @@ public class WorldCupData {
 		WorldCupData data = (WorldCupData) obj;
 		return data.getId().equals(id);
 	}
+	
+	public Map<String, Map<String, String>> getBetPersons() {
+		return betPersons;
+	}
+	
 }

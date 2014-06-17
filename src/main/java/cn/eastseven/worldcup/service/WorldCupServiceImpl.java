@@ -103,6 +103,9 @@ public class WorldCupServiceImpl implements WorldCupService {
 				String result = jedis.hmset(key, hash);
 				System.out.println("key="+key+", id="+id+", l="+left+", m="+middle+", r="+right+", result="+result);
 				jedis.close();
+				
+				WorldCupData wcd = load(id);
+				wcd.getBetPersons().put(name, hash);
 			}
 		});
 		
@@ -150,23 +153,14 @@ public class WorldCupServiceImpl implements WorldCupService {
 	}
 	
 	public List<Map<String, String>> getMyList(String name) {
-		Jedis jedis = pool.getResource();
 		List<Map<String, String>> list = Lists.newArrayList();
 		
 		for(WorldCupData wc : WorldCupDataUtils.getMatchList()) {
-			String key = name + ":" + wc.getId();
-			List<String> result = jedis.hmget(key, "l", "m", "r", "time");
-			//System.out.println("getMylist : key="+key+", result="+Arrays.toString(list.toArray()));
-			Map<String, String> map = Maps.newHashMap();
-			map.put("id", wc.getId());
-			map.put("l", result.get(0));
-			map.put("m", result.get(1));
-			map.put("r", result.get(2));
-			map.put("time", result.get(3));
+			String key = name;
+			Map<String, String> map = wc.getBetPersons().get(key);
 			list.add(map);
 		}
 		
-		jedis.close();
 		return list;
 	}
 	

@@ -24,7 +24,7 @@ import com.google.common.collect.Sets;
 public class WorldCupDataUtils {
 
 	private static Set<WorldCupData> matches = Sets.newConcurrentHashSet();
-	private static List<WorldCupData> matches4redis = Lists.newArrayList();
+	private static List<WorldCupData> matches4redis = Lists.newCopyOnWriteArrayList();
 	
 	public static Set<WorldCupData> getMatches() {
 		return matches;
