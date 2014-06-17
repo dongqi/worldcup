@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	
 	$.ajax({
 		url : './cmd?m=list',
 		async : false,
@@ -42,7 +43,11 @@ $(document).ready(function(){
 				panel += '</center>';
 				panel += '</div>';
 				panel += '</div>';
-				$('#list').append(panel);
+				if(date == curDate) {
+					$('#list').append(panel);
+				} else {
+					$('#list2').append(panel);
+				}
 			}
 		}
 	});
