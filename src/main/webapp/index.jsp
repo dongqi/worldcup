@@ -25,7 +25,7 @@
 		<div class="page-header">
 			<center><h1>Hello World Cup 2014</h1></center>
 		</div>
-		
+		<div class="well">温馨提示，小组赛期间，为beta版，会出现各种bug，请手动记录好自己的投注信息，3Q</div>
 		<div class="form-group">
 		<div class="input-group input-group-lg">
 		  <span class="input-group-btn">
