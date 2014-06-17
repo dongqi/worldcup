@@ -6,7 +6,7 @@ $(document).ready(function(){
 		dataType : 'json',
 		type : 'GET',
 		success : function(result) {
-			var halfHour = 30 * 60 * 1000;
+			var halfHour = 1 * 60 * 60 * 1000;
 			var current = new Date();
 			var curDate = '2014年0' + (current.getMonth()+1) + '月' + current.getDate() + '日';
 			var curTime = current.getTime();
@@ -14,8 +14,8 @@ $(document).ready(function(){
 				var n = result[index];
 				
 				var date = n.startTime.split(' ')[0];
-				var matchOff = (n.times - curTime) > halfHour;
-				var color = date == curDate ? 'primary' : 'info';
+				var matchOff = (n.times - curTime) >= halfHour;
+				var color = matchOff ? 'primary' : 'info';
 				var idL = 'l_'+n.id;
 				var idM = 'm_'+n.id;
 				var idR = 'r_'+n.id;
@@ -43,7 +43,7 @@ $(document).ready(function(){
 				panel += '</center>';
 				panel += '</div>';
 				panel += '</div>';
-				if(date == curDate) {
+				if(matchOff) {
 					$('#list').append(panel);
 				} else {
 					$('#list2').append(panel);
