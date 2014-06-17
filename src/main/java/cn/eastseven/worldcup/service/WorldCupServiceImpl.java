@@ -1,6 +1,5 @@
 package cn.eastseven.worldcup.service;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -85,10 +84,10 @@ public class WorldCupServiceImpl implements WorldCupService {
 	
 	public boolean bet(final String name, final String id, final String left, final String middle, final String right) {
 		final Date current = Calendar.getInstance().getTime();
-		WorldCupData wc = WorldCupDataUtils.getMatchList().get(Integer.valueOf(id));
-		if(current.getTime() > wc.getTimes()) {
-			return false;
-		}
+//		WorldCupData wc = WorldCupDataUtils.getMatchList().get(Integer.valueOf(id));
+//		if(current.getTime() > wc.getTimes()) {
+//			return false;
+//		}
 		
 		executorService.execute(new Runnable() {
 			
@@ -102,8 +101,8 @@ public class WorldCupServiceImpl implements WorldCupService {
 				hash.put("r", right);
 				hash.put("time", WorldCupData.sdf.format(current));
 				String result = jedis.hmset(key, hash);
-				jedis.close();
 				System.out.println("key="+key+", id="+id+", l="+left+", m="+middle+", r="+right+", result="+result);
+				jedis.close();
 			}
 		});
 		
@@ -157,7 +156,7 @@ public class WorldCupServiceImpl implements WorldCupService {
 		for(WorldCupData wc : WorldCupDataUtils.getMatchList()) {
 			String key = name + ":" + wc.getId();
 			List<String> result = jedis.hmget(key, "l", "m", "r", "time");
-			System.out.println("getMylist : key="+key+", result="+Arrays.toString(list.toArray()));
+			//System.out.println("getMylist : key="+key+", result="+Arrays.toString(list.toArray()));
 			Map<String, String> map = Maps.newHashMap();
 			map.put("id", wc.getId());
 			map.put("l", result.get(0));
