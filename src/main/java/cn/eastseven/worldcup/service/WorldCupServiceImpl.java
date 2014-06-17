@@ -48,7 +48,8 @@ public class WorldCupServiceImpl implements WorldCupService {
 			wcd.setResultRight(v.get(8));
 			
 			for(String username : users) {
-				List<String> list = jedis.hmget(username, "l","m","r","time");
+				String userKey = username + ":" + index;
+				List<String> list = jedis.hmget(userKey, "l","m","r","time");
 				if(list.isEmpty()) continue;
 				Map<String, String> map = Maps.newHashMap();
 				
